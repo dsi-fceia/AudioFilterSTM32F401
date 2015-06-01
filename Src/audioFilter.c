@@ -67,7 +67,7 @@ extern void audioFilter_filter(q15_t *src, q15_t *dest, uint32_t length)
 {
 	uint32_t i;
 	
-	for (i = 0 ; i < length ; i = i+2)
+	for (i = 0 ; i < length ; i++)
 	{
 		/* filtrado de canal izquierdo */
 		arm_fir_q15(&firInstance, &src[i], &dest[i], BLOCK_SIZE);
