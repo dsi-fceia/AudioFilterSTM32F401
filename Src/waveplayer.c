@@ -37,6 +37,7 @@
 /* Private define ------------------------------------------------------------*/
 
 #define AUDIO_BUFFER_SIZE             4096
+#define AUDIO_SAMPLES_SIZE						(AUDIO_BUFFER_SIZE/2)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -85,6 +86,16 @@ extern MSC_ApplicationTypeDef AppliState;
 
 /* Private functions ---------------------------------------------------------*/
 
+void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
+{
+	int32_t i;
+	
+	for (i = lengthSrc-1 ; i >= 0 ; i--)
+	{
+		dest[i*2] = src[i];
+		dest[i*2+1] = src[i];
+	}
+}
 /**
   * @brief  Plays Wave from a mass storage.
   * @param  AudioFreq: Audio Sampling Frequency
@@ -146,14 +157,19 @@ void WavePlayBack(uint32_t AudioFreq)
       {
         f_read(&FileRead, 
                &Audio_Buffer[0], 
-               AUDIO_BUFFER_SIZE/2, 
+               AUDIO_BUFFER_SIZE/4, 
                (void *)&bytesread); 
-        
+      	
 				audioFilter_filter(
 					(q15_t*)&Audio_Buffer[0], 
 					(q15_t*)&Audio_Buffer[0], 
-					(AUDIO_BUFFER_SIZE/2)/2);
-        
+					bytesread/2);
+        			  
+				convertToStereo(
+					(int16_t *)&Audio_Buffer[0],
+					(int16_t *)&Audio_Buffer[0],
+					bytesread/2);
+			
 				BufferOffset = BUFFER_OFFSET_NONE;
       }
       
@@ -161,14 +177,19 @@ void WavePlayBack(uint32_t AudioFreq)
       {
         f_read(&FileRead, 
                &Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-               AUDIO_BUFFER_SIZE/2, 
+               AUDIO_BUFFER_SIZE/4,
                (void *)&bytesread); 
 
 				audioFilter_filter(
 					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
 					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-					(AUDIO_BUFFER_SIZE/2)/2);
-        
+					bytesread/2);
+				
+				convertToStereo(
+					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
+					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
+					bytesread/2);
+				
         BufferOffset = BUFFER_OFFSET_NONE;
       } 
       if(AudioRemSize > (AUDIO_BUFFER_SIZE / 2))
