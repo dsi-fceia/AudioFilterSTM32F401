@@ -448,14 +448,14 @@
               <FilePath>..\src\waverecorder.c</FilePath>
             </File>
             <File>
-              <FileName>lowPassFS44100.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lowPassFS44100.c</FilePath>
-            </File>
-            <File>
               <FileName>audioFilter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\audioFilter.c</FilePath>
+            </File>
+            <File>
+              <FileName>lowPassFS16000.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\lowPassFS16000.c</FilePath>
             </File>
           </Files>
         </Group>
