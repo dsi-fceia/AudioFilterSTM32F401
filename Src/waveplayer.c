@@ -37,7 +37,6 @@
 /* Private define ------------------------------------------------------------*/
 
 #define AUDIO_BUFFER_SIZE             4096
-#define AUDIO_SAMPLES_SIZE						(AUDIO_BUFFER_SIZE/2)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -159,16 +158,16 @@ void WavePlayBack(uint32_t AudioFreq)
                &Audio_Buffer[0], 
                AUDIO_BUFFER_SIZE/4, 
                (void *)&bytesread); 
-      	
+				
 				audioFilter_filter(
 					(q15_t*)&Audio_Buffer[0], 
 					(q15_t*)&Audio_Buffer[0], 
-					bytesread/2);
+					AUDIO_BUFFER_SIZE/8);
         			  
 				convertToStereo(
 					(int16_t *)&Audio_Buffer[0],
 					(int16_t *)&Audio_Buffer[0],
-					bytesread/2);
+					AUDIO_BUFFER_SIZE/8);
 			
 				BufferOffset = BUFFER_OFFSET_NONE;
       }
@@ -183,12 +182,12 @@ void WavePlayBack(uint32_t AudioFreq)
 				audioFilter_filter(
 					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
 					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-					bytesread/2);
+					AUDIO_BUFFER_SIZE/8);
 				
 				convertToStereo(
 					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
 					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
-					bytesread/2);
+					AUDIO_BUFFER_SIZE/8);
 				
         BufferOffset = BUFFER_OFFSET_NONE;
       } 
