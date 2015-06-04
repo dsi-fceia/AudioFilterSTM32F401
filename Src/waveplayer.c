@@ -102,6 +102,7 @@ void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
 */
 void WavePlayBack(uint32_t AudioFreq)
 { 
+	/* tipo de dato UINT para mantener compatibilidad con FatFs */
   UINT bytesread = 0;
   
   /* Start playing */
