@@ -11,6 +11,7 @@
 *.map
 *.htm
 *.lst
+*.dep
 
 # Shared objects (inc. Windows DLLs)
 *.dll
