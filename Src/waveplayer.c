@@ -44,12 +44,6 @@
 /* LED State (Toggle or OFF)*/
 __IO uint32_t LEDsState;
 
-extern __IO uint32_t RepeatState, PauseResumeStatus, PressCount;
-
-/* Audio Play Start variable. 
-   Defined as external in main.c*/
-__IO uint32_t AudioPlayStart = 0;
-
 /* Audio wave data length to be played */
 static uint32_t WaveDataLength = 0;
 
@@ -65,27 +59,15 @@ __IO BUFFER_StateTypeDef BufferOffset = BUFFER_OFFSET_NONE;
 /* Initial Volume level (from 0 (Mute) to 100 (Max)) */
 static uint8_t Volume = 70;
 
-/* Variable used to indicate audio mode (play, record or stop). */
-/* Defined in main.c */
-extern __IO uint32_t CmdIndex;
-
 /* Variable used by FatFs*/
 FIL FileRead;
 DIR Directory;
-
-/* Variable used to switch play from audio sample available on USB to recorded file. */
-/* Defined in waverecorder.c */
-extern uint32_t WaveRecStatus;
-
-/* Variable to indicate USB state (start/idle) */
-/* Defined in main.c */
-extern MSC_ApplicationTypeDef AppliState;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
 
-void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
+static void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
 {
 	int32_t i;
 	
@@ -95,6 +77,19 @@ void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
 		dest[i*2+1] = src[i];
 	}
 }
+
+/**
+  * @brief  Stops playing Wave.
+  * @param  None
+  * @retval None
+  */
+static void WavePlayerStop(void)
+{ 
+  BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW);
+}
+
+
+/* Exported functions ------------------------------------------------------- */
 /**
   * @brief  Plays Wave from a mass storage.
   * @param  AudioFreq: Audio Sampling Frequency
@@ -105,10 +100,6 @@ void WavePlayBack(uint32_t AudioFreq)
 	/* tipo de dato UINT para mantener compatibilidad con FatFs */
   UINT bytesread = 0;
   
-  /* Start playing */
-  AudioPlayStart = 1;
-  RepeatState = REPEAT_ON;
-  
   /* Initialize Wave player (Codec, DMA, I2C) */
   if(WavePlayerInit(AudioFreq) != 0)
   {
@@ -116,119 +107,79 @@ void WavePlayBack(uint32_t AudioFreq)
   }
   
   /* Get Data from USB Flash Disk */
-  f_lseek(&FileRead, 0);
-  f_read (&FileRead, &Audio_Buffer[0], AUDIO_BUFFER_SIZE, &bytesread);
-  AudioRemSize = WaveDataLength - bytesread;
+//  f_lseek(&FileRead, 0);
+//  f_read (&FileRead, &Audio_Buffer[0], AUDIO_BUFFER_SIZE, &bytesread);
+//  AudioRemSize = WaveDataLength - bytesread;
   
   /* Start playing Wave */
   BSP_AUDIO_OUT_Play((uint16_t*)&Audio_Buffer[0], AUDIO_BUFFER_SIZE);
   LEDsState = LED6_TOGGLE;
-  PauseResumeStatus = RESUME_STATUS;
-  PressCount = 0;
-  
+    
 	audioFilter_init();
 	
+	/* Toggling LED6 to signal Play */
+	LEDsState = LED6_TOGGLE;
+	/* Resume playing Wave */
+	WavePlayerPauseResume(RESUME_STATUS);
+	
   /* Check if the device is connected.*/
-  while((AudioRemSize != 0) && (AppliState != APPLICATION_IDLE))
+  while (AudioRemSize != 0)
   { 
-    /* Test on the command: Playing */
-    if(CmdIndex == CMD_PLAY)
-    { 
-      if(PauseResumeStatus == PAUSE_STATUS)
-      {
-        /* Stop Toggling LED2 to signal Pause */
-        LEDsState = STOP_TOGGLE;
-        /* Pause playing Wave */
-        WavePlayerPauseResume(PauseResumeStatus);
-        PauseResumeStatus = IDLE_STATUS;
-      }
-      else if(PauseResumeStatus == RESUME_STATUS)
-      {
-        /* Toggling LED6 to signal Play */
-        LEDsState = LED6_TOGGLE;
-        /* Resume playing Wave */
-        WavePlayerPauseResume(PauseResumeStatus);
-        PauseResumeStatus = IDLE_STATUS;
-      }  
-      
-      bytesread = 0;
-      
-      if(BufferOffset == BUFFER_OFFSET_HALF)
-      {
-        f_read(&FileRead, 
-               &Audio_Buffer[0], 
-               AUDIO_BUFFER_SIZE/4, 
-               (void *)&bytesread); 
-				
-				audioFilter_filter(
-					(q15_t*)&Audio_Buffer[0], 
-					(q15_t*)&Audio_Buffer[0], 
-					AUDIO_BUFFER_SIZE/8);
-        			  
-				convertToStereo(
-					(int16_t *)&Audio_Buffer[0],
-					(int16_t *)&Audio_Buffer[0],
-					AUDIO_BUFFER_SIZE/8);
+		bytesread = 0;
+		
+		if (BufferOffset == BUFFER_OFFSET_HALF)
+		{
+			f_read(&FileRead, 
+						 &Audio_Buffer[0], 
+						 AUDIO_BUFFER_SIZE/4, 
+						 (void *)&bytesread); 
 			
-				BufferOffset = BUFFER_OFFSET_NONE;
-      }
-      
-      if(BufferOffset == BUFFER_OFFSET_FULL)
-      {
-        f_read(&FileRead, 
-               &Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-               AUDIO_BUFFER_SIZE/4,
-               (void *)&bytesread); 
+			audioFilter_filter(
+				(q15_t*)&Audio_Buffer[0], 
+				(q15_t*)&Audio_Buffer[0], 
+				AUDIO_BUFFER_SIZE/8);
+							
+			convertToStereo(
+				(int16_t *)&Audio_Buffer[0],
+				(int16_t *)&Audio_Buffer[0],
+				AUDIO_BUFFER_SIZE/8);
+		
+			BufferOffset = BUFFER_OFFSET_NONE;
+		}
+		
+		if(BufferOffset == BUFFER_OFFSET_FULL)
+		{
+			f_read(&FileRead, 
+						 &Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
+						 AUDIO_BUFFER_SIZE/4,
+						 (void *)&bytesread); 
 
-				audioFilter_filter(
-					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-					(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-					AUDIO_BUFFER_SIZE/8);
-				
-				convertToStereo(
-					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
-					(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
-					AUDIO_BUFFER_SIZE/8);
-				
-        BufferOffset = BUFFER_OFFSET_NONE;
-      } 
-      if(AudioRemSize > (AUDIO_BUFFER_SIZE / 2))
-      {
-        AudioRemSize -= bytesread;
-      }
-      else
-      {
-        AudioRemSize = 0;
-      }
-    }
-    else 
-    {
-      /* Stop playing Wave */
-      WavePlayerStop();
-      f_close(&FileRead);
-      AudioRemSize = 0;
-      RepeatState = REPEAT_ON;
-      break;
-    }
+			audioFilter_filter(
+				(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
+				(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
+				AUDIO_BUFFER_SIZE/8);
+			
+			convertToStereo(
+				(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
+				(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
+				AUDIO_BUFFER_SIZE/8);
+			
+			BufferOffset = BUFFER_OFFSET_NONE;
+		} 
+		if(AudioRemSize > (AUDIO_BUFFER_SIZE / 2))
+		{
+			AudioRemSize -= bytesread;
+		}
+		else
+		{
+			AudioRemSize = 0;
+		}
   }
-#ifdef PLAY_REPEAT_DISABLED 
-  RepeatState = REPEAT_OFF;
-  /* Stop playing Wave */
-  WavePlayerStop();
-  f_close(&FileRead);
-  /* Test on the command: Playing */
-  if(CmdIndex == CMD_PLAY)
-  {
-    LEDsState = LED4_TOGGLE;
-  }
-#else 
   LEDsState = LEDS_OFF;
-  RepeatState = REPEAT_ON;
-  AudioPlayStart = 0;
-  /* Stop playing Wave */
+  
+	/* Stop playing Wave */
   WavePlayerStop();
   f_close(&FileRead);
-#endif /* PLAY_REPEAT_DISABLED */
 }
 
 /**
@@ -247,16 +198,6 @@ void WavePlayerPauseResume(uint32_t wState)
     BSP_AUDIO_OUT_Resume();   
   }
 }
-
-/**
-  * @brief  Stops playing Wave.
-  * @param  None
-  * @retval None
-  */
-void WavePlayerStop(void)
-{ 
-  BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW);
-}
  
 /**
   * @brief  Initializes the Wave player.
@@ -265,9 +206,6 @@ void WavePlayerStop(void)
   */
 int WavePlayerInit(uint32_t AudioFreq)
 { 
-  /* MEMS Accelerometer configure to manage PAUSE, RESUME operations */
-  BSP_ACCELERO_Click_ITConfig();
-
   /* Initialize the Audio codec and all related peripherals (I2S, I2C, IOExpander, IOs...) */  
   return(BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_AUTO, Volume, AudioFreq));  
 }
@@ -330,19 +268,12 @@ void WavePlayerStart(void)
   /* Get the read out protection status */
   if(f_opendir(&Directory, path) == FR_OK)
   {
-    if(WaveRecStatus == 1)
-    {
-      wavefilename = REC_WAVE_NAME;
-    }
-    else
-    {
-      wavefilename = WAVE_NAME; 
-    }
-    /* Open the Wave file to be played */
+    wavefilename = WAVE_NAME; 
+    
+		/* Open the Wave file to be played */
     if(f_open(&FileRead, wavefilename , FA_READ) != FR_OK)
     {
-      BSP_LED_On(LED5);
-      CmdIndex = CMD_RECORD;
+      Error_Handler();
     }
     else
     {    
@@ -352,41 +283,13 @@ void WavePlayerStart(void)
       /* Set WaveDataLenght to the Speech Wave length */
       WaveDataLength = waveformat.FileSize;
     
+			AudioRemSize = WaveDataLength - bytesread;
+			
       /* Play the Wave */
       WavePlayBack(waveformat.SampleRate);
     }    
   }
 }
-
-/**
-  * @brief  Resets the Wave player.
-  * @param  None
-  * @retval None
-  */
-void WavePlayer_CallBack(void)
-{
-  if(AppliState != APPLICATION_IDLE)
-  {
-    /* Reset the Wave player variables */
-    RepeatState = REPEAT_ON;
-    AudioPlayStart = 0;
-    LEDsState = LEDS_OFF;
-    PauseResumeStatus = RESUME_STATUS;
-    WaveDataLength =0;
-    PressCount = 0;
-    
-    /* Stop the Codec */
-    if(BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW) != AUDIO_OK)
-    {
-      while(1){};
-    }
-    
-    /* Turn OFF LED3, LED4 and LED6 */
-    BSP_LED_Off(LED3);
-    BSP_LED_Off(LED4);
-    BSP_LED_Off(LED6);
-  }
-} 
 
 /**
 * @}

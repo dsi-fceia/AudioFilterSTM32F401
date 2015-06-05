@@ -168,7 +168,6 @@ static void USBH_UserProcess (USBH_HandleTypeDef *pHost, uint8_t vId)
     break;
     
   case HOST_USER_DISCONNECTION:
-    WavePlayer_CallBack();
     AppliState = APPLICATION_IDLE;
     f_mount(NULL, (TCHAR const*)"", 0);          
     break;
