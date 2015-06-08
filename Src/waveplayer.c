@@ -63,6 +63,8 @@ static uint8_t Volume = 70;
 FIL FileRead;
 DIR Directory;
 
+static uint8_t filterState = 1;
+
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
@@ -106,16 +108,22 @@ void WavePlayBack(uint32_t AudioFreq)
     Error_Handler();
   }
   
-  /* Get Data from USB Flash Disk */
-//  f_lseek(&FileRead, 0);
-//  f_read (&FileRead, &Audio_Buffer[0], AUDIO_BUFFER_SIZE, &bytesread);
-//  AudioRemSize = WaveDataLength - bytesread;
-  
   /* Start playing Wave */
   BSP_AUDIO_OUT_Play((uint16_t*)&Audio_Buffer[0], AUDIO_BUFFER_SIZE);
   LEDsState = LED6_TOGGLE;
     
 	audioFilter_init();
+	
+	if (filterState)
+	{
+		audioFilter_filterOn();
+		filterState = 0;
+	}
+	else
+	{
+		audioFilter_filterOff();
+		filterState = 1;
+	}
 	
 	/* Toggling LED6 to signal Play */
 	LEDsState = LED6_TOGGLE;

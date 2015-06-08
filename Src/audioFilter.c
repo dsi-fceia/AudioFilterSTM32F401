@@ -49,6 +49,7 @@
 /* Private variables ---------------------------------------------------------*/
 static q15_t firStateI16[BLOCK_SIZE + LP_FS16000_FC240_LENGTH];
 static arm_fir_instance_q15 firInstance;
+static uint8_t filterOn;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -61,6 +62,8 @@ extern void audioFilter_init(void)
 		(q15_t*)lpFS16000FC240_coeff, 
 		(q15_t*)&firStateI16, 
 		BLOCK_SIZE);
+	
+	filterOn = 1;
 }
 
 extern void audioFilter_filter(q15_t *src, q15_t *dest, uint32_t length)
@@ -69,9 +72,26 @@ extern void audioFilter_filter(q15_t *src, q15_t *dest, uint32_t length)
 	
 	for (i = 0 ; i < length ; i++)
 	{
-		/* filtrado de canal izquierdo */
-		arm_fir_q15(&firInstance, &src[i], &dest[i], BLOCK_SIZE);
+		if (filterOn)
+		{
+			/* filtrado de canal izquierdo */
+			arm_fir_q15(&firInstance, &src[i], &dest[i], BLOCK_SIZE);
+		}
+		else
+		{	
+			dest[i] = src[i];
+		}
 	}
+}
+
+extern void audioFilter_filterOn(void)
+{
+	filterOn = 1;
+}
+
+extern void audioFilter_filterOff(void)
+{
+	filterOn = 0;
 }
 
 /* End of file ---------------------------------------------------------------*/

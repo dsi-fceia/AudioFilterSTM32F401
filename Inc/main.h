@@ -59,7 +59,7 @@ MSC_ApplicationTypeDef;
 
 
 /* You can change the Wave file name as you need, but do not exceed 11 characters */
-#define WAVE_NAME "0:audio_sample.wav"
+#define WAVE_NAME "0:audioOut50-1000.wav"
 #define REC_WAVE_NAME "0:rec.wav"
   
 /* State Machine for the USBH_USR_ApplicationState */

@@ -68,6 +68,9 @@ extern void audioFilter_init(void);
   */
 extern void audioFilter_filter(q15_t *src, q15_t *dest, uint32_t length);
 
+extern void audioFilter_filterOn(void);
+
+extern void audioFilter_filterOff(void);
 
 #endif /* AUDIO_FILTER_H */
 
