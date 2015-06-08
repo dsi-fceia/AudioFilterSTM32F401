@@ -36,7 +36,8 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 
-#define AUDIO_BUFFER_SIZE             4096
+#define AUDIO_BUFFER_STEREO_LENGTH				2048
+#define AUDIO_BUFFER_MONO_LENGTH					(AUDIO_BUFFER_STEREO_LENGTH/4)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -51,7 +52,9 @@ static uint32_t WaveDataLength = 0;
 static __IO uint32_t AudioRemSize = 0;
 
 /* Ping-Pong buffer used for audio play */
-uint8_t Audio_Buffer[AUDIO_BUFFER_SIZE];
+int16_t Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH];
+
+int16_t Audio_BufferMono[AUDIO_BUFFER_MONO_LENGTH];
 
 /* Position in the audio play buffer */
 __IO BUFFER_StateTypeDef BufferOffset = BUFFER_OFFSET_NONE;
@@ -109,7 +112,7 @@ void WavePlayBack(uint32_t AudioFreq)
   }
   
   /* Start playing Wave */
-  BSP_AUDIO_OUT_Play((uint16_t*)&Audio_Buffer[0], AUDIO_BUFFER_SIZE);
+  BSP_AUDIO_OUT_Play((uint16_t*)&Audio_BufferStereo[0], sizeof(Audio_BufferStereo));
   LEDsState = LED6_TOGGLE;
     
 	audioFilter_init();
@@ -138,19 +141,19 @@ void WavePlayBack(uint32_t AudioFreq)
 		if (BufferOffset == BUFFER_OFFSET_HALF)
 		{
 			f_read(&FileRead, 
-						 &Audio_Buffer[0], 
-						 AUDIO_BUFFER_SIZE/4, 
+						 &Audio_BufferMono[0], 
+						 sizeof(Audio_BufferMono),
 						 (void *)&bytesread); 
 			
 			audioFilter_filter(
-				(q15_t*)&Audio_Buffer[0], 
-				(q15_t*)&Audio_Buffer[0], 
-				AUDIO_BUFFER_SIZE/8);
+				(q15_t*)&Audio_BufferMono[0], 
+				(q15_t*)&Audio_BufferMono[0], 
+				AUDIO_BUFFER_MONO_LENGTH);
 							
 			convertToStereo(
-				(int16_t *)&Audio_Buffer[0],
-				(int16_t *)&Audio_Buffer[0],
-				AUDIO_BUFFER_SIZE/8);
+				(int16_t *)&Audio_BufferMono[0],
+				(int16_t *)&Audio_BufferStereo[0],
+				AUDIO_BUFFER_MONO_LENGTH);
 		
 			BufferOffset = BUFFER_OFFSET_NONE;
 		}
@@ -158,23 +161,23 @@ void WavePlayBack(uint32_t AudioFreq)
 		if(BufferOffset == BUFFER_OFFSET_FULL)
 		{
 			f_read(&FileRead, 
-						 &Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-						 AUDIO_BUFFER_SIZE/4,
+						 &Audio_BufferMono[0], 
+						 sizeof(Audio_BufferMono),
 						 (void *)&bytesread); 
-
+			
 			audioFilter_filter(
-				(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-				(q15_t*)&Audio_Buffer[AUDIO_BUFFER_SIZE/2], 
-				AUDIO_BUFFER_SIZE/8);
+				(q15_t*)&Audio_BufferMono[0], 
+				(q15_t*)&Audio_BufferMono[0], 
+				AUDIO_BUFFER_MONO_LENGTH);
 			
 			convertToStereo(
-				(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
-				(int16_t *)&Audio_Buffer[AUDIO_BUFFER_SIZE/2],
-				AUDIO_BUFFER_SIZE/8);
+				(int16_t *)&Audio_BufferMono[0],
+				(int16_t *)&Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH/2],
+				AUDIO_BUFFER_MONO_LENGTH);
 			
 			BufferOffset = BUFFER_OFFSET_NONE;
 		} 
-		if(AudioRemSize > (AUDIO_BUFFER_SIZE / 2))
+		if (AudioRemSize > sizeof(Audio_BufferMono))
 		{
 			AudioRemSize -= bytesread;
 		}
@@ -243,7 +246,7 @@ void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)
 void BSP_AUDIO_OUT_TransferComplete_CallBack(void)
 {
   BufferOffset = BUFFER_OFFSET_FULL;
-  BSP_AUDIO_OUT_ChangeBuffer((uint16_t*)&Audio_Buffer[0], AUDIO_BUFFER_SIZE /2);
+  BSP_AUDIO_OUT_ChangeBuffer((uint16_t*)&Audio_BufferStereo[0], sizeof(Audio_BufferStereo) /2);
 }
 
 /**
