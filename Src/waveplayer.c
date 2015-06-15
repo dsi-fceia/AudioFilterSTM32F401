@@ -141,7 +141,8 @@ void WavePlayBack(uint32_t AudioFreq)
   { 
 		bytesread = 0;
 		
-		if (BufferOffset == BUFFER_OFFSET_HALF)
+		if ( (BUFFER_OFFSET_HALF == BufferOffset) ||
+				 (BUFFER_OFFSET_FULL == BufferOffset) )
 		{
 			f_read(&FileRead, 
 				&Audio_BufferMono[0], 
@@ -152,12 +153,22 @@ void WavePlayBack(uint32_t AudioFreq)
 				(q15_t*)&Audio_BufferMono[0], 
 				(q15_t*)&Audio_BufferMono[0], 
 				AUDIO_BUFFER_MONO_LENGTH);
-							
-			convertToStereo(
-				(int16_t *)&Audio_BufferMono[0],
-				(int16_t *)&Audio_BufferStereo[0],
-				AUDIO_BUFFER_MONO_LENGTH);
-		
+			
+			if (BUFFER_OFFSET_HALF == BufferOffset)
+			{
+				convertToStereo(
+					(int16_t *)&Audio_BufferMono[0],
+					(int16_t *)&Audio_BufferStereo[0],
+					AUDIO_BUFFER_MONO_LENGTH);
+			}
+			else
+			{
+				convertToStereo(
+					(int16_t *)&Audio_BufferMono[0],
+					(int16_t *)&Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH/2],
+					AUDIO_BUFFER_MONO_LENGTH);
+			}
+				
 			BufferOffset = BUFFER_OFFSET_NONE;
 			
 			if (0 == resGuardado)
@@ -169,33 +180,6 @@ void WavePlayBack(uint32_t AudioFreq)
 			}
 		}
 		
-		if(BufferOffset == BUFFER_OFFSET_FULL)
-		{
-			f_read(&FileRead, 
-				&Audio_BufferMono[0], 
-				sizeof(Audio_BufferMono),
-				(void *)&bytesread); 
-			
-			audioFilter_filter(
-				(q15_t*)&Audio_BufferMono[0], 
-				(q15_t*)&Audio_BufferMono[0], 
-				AUDIO_BUFFER_MONO_LENGTH);
-			
-			convertToStereo(
-				(int16_t *)&Audio_BufferMono[0],
-				(int16_t *)&Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH/2],
-				AUDIO_BUFFER_MONO_LENGTH);
-			
-			BufferOffset = BUFFER_OFFSET_NONE;
-			
-			if (0 == resGuardado)
-			{
-				f_write(&FileWrite, 
-					&Audio_BufferMono[0], 
-					sizeof(Audio_BufferMono),
-					(void *)&bytesread); 
-			}
-		} 
 		if (AudioRemSize > sizeof(Audio_BufferMono))
 		{
 			AudioRemSize -= bytesread;
