@@ -58,9 +58,14 @@ typedef enum
 MSC_ApplicationTypeDef;
 
 
-/* You can change the Wave file name as you need, but do not exceed 11 characters */
-#define WAVE_NAME "0:audioOut50-1000.wav"
-#define REC_WAVE_NAME "0:rec.wav"
+/* \brief nombre del archivo de audio sin extensión */
+#define WAVE_NAME 							"audioOut50-1000"
+
+/* \brief nombre del archivo de audio con extensión y path (no modificar)*/
+#define WAVE_NAME_COMPLETO 			"0:"WAVE_NAME".wav"
+
+/* \brief nombre del archivo de audio grabado con extensión y path (no modificar)*/
+#define REC_WAVE_NAME_COMPLETO	"0:"WAVE_NAME"-REC.wav"
   
 /* State Machine for the USBH_USR_ApplicationState */
 #define USBH_USR_FS_INIT    ((uint8_t)0x00)

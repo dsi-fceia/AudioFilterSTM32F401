@@ -279,7 +279,7 @@ void WavePlayerStart(void)
   /* Get the read out protection status */
   if(f_opendir(&Directory, path) == FR_OK)
   {
-    wavefilename = WAVE_NAME; 
+    wavefilename = WAVE_NAME_COMPLETO; 
     
 		/* Open the Wave file to be played */
     if(f_open(&FileRead, wavefilename , FA_READ) != FR_OK)
