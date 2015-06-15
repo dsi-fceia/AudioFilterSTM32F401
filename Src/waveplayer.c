@@ -64,7 +64,6 @@ static uint8_t Volume = 70;
 
 /* Variable used by FatFs*/
 FIL FileRead;
-DIR Directory;
 
 static uint8_t filterState = 1;
 
@@ -272,34 +271,29 @@ void BSP_AUDIO_OUT_Error_CallBack(void)
 void WavePlayerStart(void)
 {
   UINT bytesread = 0;
-  char path[] = "0:/";
   char* wavefilename = NULL;
   WAVE_FormatTypeDef waveformat;
   
-  /* Get the read out protection status */
-  if(f_opendir(&Directory, path) == FR_OK)
-  {
-    wavefilename = WAVE_NAME_COMPLETO; 
-    
-		/* Open the Wave file to be played */
-    if(f_open(&FileRead, wavefilename , FA_READ) != FR_OK)
-    {
-      Error_Handler();
-    }
-    else
-    {    
-      /* Read sizeof(WaveFormat) from the selected file */
-      f_read (&FileRead, &waveformat, sizeof(waveformat), &bytesread);
-      
-      /* Set WaveDataLenght to the Speech Wave length */
-      WaveDataLength = waveformat.FileSize;
-    
-			AudioRemSize = WaveDataLength - bytesread;
-			
-      /* Play the Wave */
-      WavePlayBack(waveformat.SampleRate);
-    }    
-  }
+	wavefilename = WAVE_NAME_COMPLETO; 
+	
+	/* Open the Wave file to be played */
+	if(f_open(&FileRead, wavefilename , FA_READ) != FR_OK)
+	{
+		Error_Handler();
+	}
+	else
+	{    
+		/* Read sizeof(WaveFormat) from the selected file */
+		f_read (&FileRead, &waveformat, sizeof(waveformat), &bytesread);
+		
+		/* Set WaveDataLenght to the Speech Wave length */
+		WaveDataLength = waveformat.FileSize;
+	
+		AudioRemSize = WaveDataLength - bytesread;
+		
+		/* Play the Wave */
+		WavePlayBack(waveformat.SampleRate);
+	}    
 }
 
 /**
