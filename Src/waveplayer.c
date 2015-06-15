@@ -42,6 +42,9 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
+/* \brief indica si se grabó el audio filtrado en el disco */
+static uint8_t resGuardado = 0;
+
 /* LED State (Toggle or OFF)*/
 __IO uint32_t LEDsState;
 
@@ -64,6 +67,7 @@ static uint8_t Volume = 70;
 
 /* Variable used by FatFs*/
 FIL FileRead;
+FIL FileWrite;
 
 static uint8_t filterState = 1;
 
@@ -140,9 +144,9 @@ void WavePlayBack(uint32_t AudioFreq)
 		if (BufferOffset == BUFFER_OFFSET_HALF)
 		{
 			f_read(&FileRead, 
-						 &Audio_BufferMono[0], 
-						 sizeof(Audio_BufferMono),
-						 (void *)&bytesread); 
+				&Audio_BufferMono[0], 
+				sizeof(Audio_BufferMono),
+				(void *)&bytesread); 
 			
 			audioFilter_filter(
 				(q15_t*)&Audio_BufferMono[0], 
@@ -155,14 +159,22 @@ void WavePlayBack(uint32_t AudioFreq)
 				AUDIO_BUFFER_MONO_LENGTH);
 		
 			BufferOffset = BUFFER_OFFSET_NONE;
+			
+			if (0 == resGuardado)
+			{
+				f_write(&FileWrite, 
+					&Audio_BufferMono[0], 
+					sizeof(Audio_BufferMono),
+					(void *)&bytesread); 
+			}
 		}
 		
 		if(BufferOffset == BUFFER_OFFSET_FULL)
 		{
 			f_read(&FileRead, 
-						 &Audio_BufferMono[0], 
-						 sizeof(Audio_BufferMono),
-						 (void *)&bytesread); 
+				&Audio_BufferMono[0], 
+				sizeof(Audio_BufferMono),
+				(void *)&bytesread); 
 			
 			audioFilter_filter(
 				(q15_t*)&Audio_BufferMono[0], 
@@ -175,6 +187,14 @@ void WavePlayBack(uint32_t AudioFreq)
 				AUDIO_BUFFER_MONO_LENGTH);
 			
 			BufferOffset = BUFFER_OFFSET_NONE;
+			
+			if (0 == resGuardado)
+			{
+				f_write(&FileWrite, 
+					&Audio_BufferMono[0], 
+					sizeof(Audio_BufferMono),
+					(void *)&bytesread); 
+			}
 		} 
 		if (AudioRemSize > sizeof(Audio_BufferMono))
 		{
@@ -190,6 +210,11 @@ void WavePlayBack(uint32_t AudioFreq)
 	/* Stop playing Wave */
   WavePlayerStop();
   f_close(&FileRead);
+	if (0 == resGuardado)
+	{
+		f_close(&FileWrite);
+	}
+	resGuardado = 1;
 }
 
 /**
@@ -271,13 +296,10 @@ void BSP_AUDIO_OUT_Error_CallBack(void)
 void WavePlayerStart(void)
 {
   UINT bytesread = 0;
-  char* wavefilename = NULL;
   WAVE_FormatTypeDef waveformat;
   
-	wavefilename = WAVE_NAME_COMPLETO; 
-	
 	/* Open the Wave file to be played */
-	if(f_open(&FileRead, wavefilename , FA_READ) != FR_OK)
+	if(f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
 	{
 		Error_Handler();
 	}
@@ -290,6 +312,18 @@ void WavePlayerStart(void)
 		WaveDataLength = waveformat.FileSize;
 	
 		AudioRemSize = WaveDataLength - bytesread;
+		
+		if (0 == resGuardado)
+		{
+			if (f_open(&FileWrite, 
+				REC_WAVE_NAME_COMPLETO , 
+				FA_CREATE_ALWAYS|FA_WRITE) != FR_OK)
+			{
+				Error_Handler();
+			}
+			
+			f_write(&FileWrite, &waveformat, sizeof(waveformat), &bytesread);
+		}
 		
 		/* Play the Wave */
 		WavePlayBack(waveformat.SampleRate);
