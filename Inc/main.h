@@ -73,7 +73,6 @@ MSC_ApplicationTypeDef;
 
 /* Defines for the Audio used commands */
 #define CMD_PLAY           ((uint32_t)0x00)
-#define CMD_RECORD         ((uint32_t)0x01)
 #define CMD_STOP           ((uint32_t)0x02)
 
 /* Defines for LEDs lighting */

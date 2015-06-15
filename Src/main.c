@@ -233,13 +233,7 @@ static void COMMAND_AudioExecuteApplication(void)
     if(RepeatState == REPEAT_ON)
       WavePlayerStart();
     break;
-    
-    /* Start Recording in USB Flash memory */ 
-  case CMD_RECORD:
-    RepeatState = REPEAT_ON;
-    WaveRecorderProcess();
-    break;
-    
+        
   default:
     break;
   }
@@ -447,27 +441,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     if(PbPressCheck == 0)
     {
-      HAL_Delay(10);
-      /* Test on the command: Recording */
-      if(CmdIndex == CMD_RECORD)
-      {
-        RepeatState = REPEAT_ON;
-        
-        /* Switch to Play command */
-        CmdIndex = CMD_PLAY;
-      }
-      /* Test on the command: Playing */
-      else if(CmdIndex == CMD_PLAY)
-      {
-        /* Switch to Record command */
-        CmdIndex = CMD_RECORD;
-      }
-      else
-      {
-        RepeatState = REPEAT_ON;
-        /* Default Command Index: Play command */
-        CmdIndex = CMD_PLAY; 
-      }
       PbPressCheck = 1;
     }
     else
