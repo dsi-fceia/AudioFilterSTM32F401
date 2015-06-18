@@ -84,8 +84,6 @@
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
-            <nStopA1X>0</nStopA1X>
-            <nStopA2X>0</nStopA2X>
           </AfterMake>
           <SelectedForBatchBuild>0</SelectedForBatchBuild>
           <SVCSIdString></SVCSIdString>
@@ -349,7 +347,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -363,13 +361,11 @@
             <uSurpInc>0</uSurpInc>
             <uC99>0</uC99>
             <useXO>0</useXO>
-            <v6Lang>0</v6Lang>
-            <v6LangP>0</v6LangP>
             <VariousControls>
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32F401xC,USE_STM32F401_DISCO,ARM_MATH_CM4,__FPU_PRESENT=1,UNALIGNED_SUPPORT_DISABLE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Inc;..\..\..\..\..\..\Drivers\CMSIS\Include;..\..\..\..\..\..\Drivers\CMSIS\Device\ST\STM32F4xx\Include;..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Inc;..\..\..\..\..\..\Drivers\BSP\STM32F401-Discovery;..\..\..\..\..\..\Middlewares\ST\STM32_USB_Device_Library\Core\Inc;..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Inc;..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Core\Inc;..\..\..\..\..\..\Middlewares\ST\STM32_Audio\Addons\PDM;..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src;..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\drivers</IncludePath>
+              <IncludePath>..\Inc;..\STM32Cube_FW_F4_V1.5.0\Drivers\CMSIS\Include;..\STM32Cube_FW_F4_V1.5.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include;..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Inc;..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\STM32F401-Discovery;..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_Device_Library\Core\Inc;..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Inc;..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Core\Inc;..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_Audio\Addons\PDM;..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src;..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\drivers</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -470,12 +466,12 @@
             <File>
               <FileName>cs43l22.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\BSP\Components\cs43l22\cs43l22.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\Components\cs43l22\cs43l22.c</FilePath>
             </File>
             <File>
               <FileName>lsm303dlhc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\BSP\Components\lsm303dlhc\lsm303dlhc.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\Components\lsm303dlhc\lsm303dlhc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -485,17 +481,17 @@
             <File>
               <FileName>stm32f401_discovery.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery.c</FilePath>
             </File>
             <File>
               <FileName>stm32f401_discovery_accelerometer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery_accelerometer.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery_accelerometer.c</FilePath>
             </File>
             <File>
               <FileName>stm32f401_discovery_audio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery_audio.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\BSP\STM32F401-Discovery\stm32f401_discovery_audio.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -510,17 +506,17 @@
             <File>
               <FileName>arm_fir_fast_q15.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_fast_q15.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_fast_q15.c</FilePath>
             </File>
             <File>
               <FileName>arm_fir_init_q15.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_init_q15.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_init_q15.c</FilePath>
             </File>
             <File>
               <FileName>arm_fir_q15.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_q15.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\CMSIS\DSP_Lib\Source\FilteringFunctions\arm_fir_q15.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -530,107 +526,107 @@
             <File>
               <FileName>stm32f4xx_hal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_cortex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_flash_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_hcd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_hcd.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_hcd.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_i2c.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_i2c_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2c_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_i2s.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_i2s_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_i2s_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_pwr.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_pwr_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_pwr_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_rcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_rcc_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_tim.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_tim_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_ll_fmc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_fmc.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_fmc.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_ll_usb.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_ll_usb.c</FilePath>
             </File>
             <File>
               <FileName>stm32f4xx_hal_dma_ex.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_dma_ex.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -640,17 +636,17 @@
             <File>
               <FileName>diskio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\diskio.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\diskio.c</FilePath>
             </File>
             <File>
               <FileName>ff.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
             </File>
             <File>
               <FileName>ff_gen_drv.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\ff_gen_drv.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -660,7 +656,7 @@
             <File>
               <FileName>usbh_diskio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\drivers\usbh_diskio.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\drivers\usbh_diskio.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -670,12 +666,12 @@
             <File>
               <FileName>syscall.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\option\syscall.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\option\syscall.c</FilePath>
             </File>
             <File>
               <FileName>unicode.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\Third_Party\FatFs\src\option\unicode.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\Third_Party\FatFs\src\option\unicode.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -683,9 +679,9 @@
           <GroupName>Middlewares/PDM</GroupName>
           <Files>
             <File>
-              <FileName>libPDMFilter_CM4_Keil.lib</FileName>
+              <FileName>libPDMFilter_CM4_IAR.a</FileName>
               <FileType>4</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_Audio\Addons\PDM\libPDMFilter_CM4_IAR.a</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_Audio\Addons\PDM\libPDMFilter_CM4_IAR.a</FilePath>
             </File>
           </Files>
         </Group>
@@ -695,17 +691,17 @@
             <File>
               <FileName>usbh_msc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc.c</FilePath>
             </File>
             <File>
               <FileName>usbh_msc_bot.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc_bot.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc_bot.c</FilePath>
             </File>
             <File>
               <FileName>usbh_msc_scsi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc_scsi.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Class\MSC\Src\usbh_msc_scsi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -715,22 +711,22 @@
             <File>
               <FileName>usbh_core.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_core.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_core.c</FilePath>
             </File>
             <File>
               <FileName>usbh_ctlreq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_ctlreq.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_ctlreq.c</FilePath>
             </File>
             <File>
               <FileName>usbh_ioreq.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_ioreq.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_ioreq.c</FilePath>
             </File>
             <File>
               <FileName>usbh_pipes.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_pipes.c</FilePath>
+              <FilePath>..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_USB_HOST_Library\Core\Src\usbh_pipes.c</FilePath>
             </File>
           </Files>
         </Group>

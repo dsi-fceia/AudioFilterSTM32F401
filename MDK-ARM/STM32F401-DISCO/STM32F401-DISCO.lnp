@@ -42,7 +42,7 @@
 "stm32f401-disco\usbh_diskio.o"
 "stm32f401-disco\syscall.o"
 "stm32f401-disco\unicode.o"
-"..\..\..\..\..\..\Middlewares\ST\STM32_Audio\Addons\PDM\libPDMFilter_CM4_IAR.a"
+"..\STM32Cube_FW_F4_V1.5.0\Middlewares\ST\STM32_Audio\Addons\PDM\libPDMFilter_CM4_IAR.a"
 "stm32f401-disco\usbh_msc.o"
 "stm32f401-disco\usbh_msc_bot.o"
 "stm32f401-disco\usbh_msc_scsi.o"
@@ -51,6 +51,7 @@
 "stm32f401-disco\usbh_ioreq.o"
 "stm32f401-disco\usbh_pipes.o"
 --library_type=microlib --strict --scatter "STM32F401-DISCO\STM32F401-DISCO.sct"
+
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "STM32F401-DISCO.map" -o STM32F401-DISCO\STM32F401-DISCO.axf
