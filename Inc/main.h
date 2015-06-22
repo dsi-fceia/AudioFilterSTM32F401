@@ -46,18 +46,6 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
-/* Uncomment this define to disable repeat feature */
-/* #define PLAY_REPEAT_DISABLED */
-
-typedef enum
-{
-  APPLICATION_IDLE = 0,  
-  APPLICATION_START,    
-  APPLICATION_RUNNING,
-}
-MSC_ApplicationTypeDef;
-
-
 /* \brief nombre del archivo de audio sin extensión */
 #define WAVE_NAME 							"audioOut50-1000"
 
@@ -67,28 +55,12 @@ MSC_ApplicationTypeDef;
 /* \brief nombre del archivo de audio grabado con extensión y path (no modificar)*/
 #define REC_WAVE_NAME_COMPLETO	"0:"WAVE_NAME"-REC.wav"
   
-/* State Machine for the USBH_USR_ApplicationState */
-#define USBH_USR_FS_INIT    ((uint8_t)0x00)
-#define USBH_USR_AUDIO      ((uint8_t)0x01)
-
-/* Defines for the Audio used commands */
-#define CMD_PLAY           ((uint32_t)0x00)
-#define CMD_STOP           ((uint32_t)0x02)
-
 /* Defines for LEDs lighting */
 #define LED3_TOGGLE      0x03  /* Toggle LED3 */
 #define LED4_TOGGLE      0x04  /* Toggle LED4 */
 #define LED6_TOGGLE      0x06  /* Toggle LED6 */
 #define LEDS_OFF         0x07  /* Turn OFF all LEDs */
 #define STOP_TOGGLE      0x00  /* Stop LED Toggling */
-
-/* Defines for the Audio playing process */
-#define PAUSE_STATUS     ((uint32_t)0x00) /* Audio Player in Pause Status */
-#define RESUME_STATUS    ((uint32_t)0x01) /* Audio Player in Resume Status */
-#define IDLE_STATUS      ((uint32_t)0x02) /* Audio Player in Idle Status */
-
-#define REPEAT_ON        ((uint32_t)0x00) /* Replay Status in ON */
-#define REPEAT_OFF       ((uint32_t)0x01) /* Replay Status in OFF */
 
 /* Defines for MEMS Acclerometer ID Types */
 #define MEMS_LIS3DSH     0x3F /* LIS3DSH MEMS Acclerometer ID */

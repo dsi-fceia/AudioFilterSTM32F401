@@ -34,16 +34,19 @@
 */ 
 
 /* Private typedef -----------------------------------------------------------*/
+typedef enum
+{
+  BUFFER_OFFSET_NONE = 0,  
+  BUFFER_OFFSET_HALF,  
+  BUFFER_OFFSET_FULL,     
+}BUFFER_StateTypeDef;
+
 /* Private define ------------------------------------------------------------*/
 
 #define AUDIO_BUFFER_STEREO_LENGTH				2048
-#define AUDIO_BUFFER_MONO_LENGTH					(AUDIO_BUFFER_STEREO_LENGTH/4)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
-/* \brief indica si se grabó el audio filtrado en el disco */
-static uint8_t resGuardado = 0;
 
 /* LED State (Toggle or OFF)*/
 __IO uint32_t LEDsState;
@@ -57,19 +60,12 @@ static __IO uint32_t AudioRemSize = 0;
 /* Ping-Pong buffer used for audio play */
 int16_t Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH];
 
-int16_t Audio_BufferMono[AUDIO_BUFFER_MONO_LENGTH];
-
 /* Position in the audio play buffer */
 __IO BUFFER_StateTypeDef BufferOffset = BUFFER_OFFSET_NONE;
-
-/* Initial Volume level (from 0 (Mute) to 100 (Max)) */
-static uint8_t Volume = 70;
 
 /* Variable used by FatFs*/
 FIL FileRead;
 FIL FileWrite;
-
-static uint8_t filterState = 1;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -86,148 +82,7 @@ static void convertToStereo(int16_t *src, int16_t *dest, int32_t lengthSrc)
 	}
 }
 
-/**
-  * @brief  Stops playing Wave.
-  * @param  None
-  * @retval None
-  */
-static void WavePlayerStop(void)
-{ 
-  BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW);
-}
-
-
 /* Exported functions ------------------------------------------------------- */
-/**
-  * @brief  Plays Wave from a mass storage.
-  * @param  AudioFreq: Audio Sampling Frequency
-  * @retval None
-*/
-void WavePlayBack(uint32_t AudioFreq)
-{ 
-	/* tipo de dato UINT para mantener compatibilidad con FatFs */
-  UINT bytesread = 0;
-  
-  /* Initialize Wave player (Codec, DMA, I2C) */
-  if(WavePlayerInit(AudioFreq) != 0)
-  {
-    Error_Handler();
-  }
-  
-  /* Start playing Wave */
-  BSP_AUDIO_OUT_Play((uint16_t*)&Audio_BufferStereo[0], sizeof(Audio_BufferStereo));
-  LEDsState = LED6_TOGGLE;
-    
-	audioFilter_init();
-	
-	if (filterState)
-	{
-		audioFilter_filterOn();
-		filterState = 0;
-	}
-	else
-	{
-		audioFilter_filterOff();
-		filterState = 1;
-	}
-	
-	/* Toggling LED6 to signal Play */
-	LEDsState = LED6_TOGGLE;
-	/* Resume playing Wave */
-	WavePlayerPauseResume(RESUME_STATUS);
-	
-  /* Check if the device is connected.*/
-  while (AudioRemSize != 0)
-  { 
-		bytesread = 0;
-		
-		if ( (BUFFER_OFFSET_HALF == BufferOffset) ||
-				 (BUFFER_OFFSET_FULL == BufferOffset) )
-		{
-			f_read(&FileRead, 
-				&Audio_BufferMono[0], 
-				sizeof(Audio_BufferMono),
-				(void *)&bytesread); 
-			
-			audioFilter_filter(
-				(q15_t*)&Audio_BufferMono[0], 
-				(q15_t*)&Audio_BufferMono[0], 
-				AUDIO_BUFFER_MONO_LENGTH);
-			
-			if (BUFFER_OFFSET_HALF == BufferOffset)
-			{
-				convertToStereo(
-					(int16_t *)&Audio_BufferMono[0],
-					(int16_t *)&Audio_BufferStereo[0],
-					AUDIO_BUFFER_MONO_LENGTH);
-			}
-			else
-			{
-				convertToStereo(
-					(int16_t *)&Audio_BufferMono[0],
-					(int16_t *)&Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH/2],
-					AUDIO_BUFFER_MONO_LENGTH);
-			}
-				
-			BufferOffset = BUFFER_OFFSET_NONE;
-			
-			if (0 == resGuardado)
-			{
-				f_write(&FileWrite, 
-					&Audio_BufferMono[0], 
-					sizeof(Audio_BufferMono),
-					(void *)&bytesread); 
-			}
-		}
-		
-		if (AudioRemSize > sizeof(Audio_BufferMono))
-		{
-			AudioRemSize -= bytesread;
-		}
-		else
-		{
-			AudioRemSize = 0;
-		}
-  }
-  LEDsState = LEDS_OFF;
-  
-	/* Stop playing Wave */
-  WavePlayerStop();
-  f_close(&FileRead);
-	if (0 == resGuardado)
-	{
-		f_close(&FileWrite);
-	}
-	resGuardado = 1;
-}
-
-/**
-  * @brief  Pauses or Resumes a played Wave.
-  * @param  state: Player state: Pause, Resume or Idle
-  * @retval None
-  */
-void WavePlayerPauseResume(uint32_t wState)
-{ 
-  if(wState == PAUSE_STATUS)
-  {
-    BSP_AUDIO_OUT_Pause();   
-  }
-  else
-  {
-    BSP_AUDIO_OUT_Resume();   
-  }
-}
- 
-/**
-  * @brief  Initializes the Wave player.
-  * @param  AudioFreq: Audio sampling frequency
-  * @retval None
-  */
-int WavePlayerInit(uint32_t AudioFreq)
-{ 
-  /* Initialize the Audio codec and all related peripherals (I2S, I2C, IOExpander, IOs...) */  
-  return(BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_AUTO, Volume, AudioFreq));  
-}
 
 /*--------------------------------
 Callbacks implementation:
@@ -277,41 +132,87 @@ void BSP_AUDIO_OUT_Error_CallBack(void)
   * @param  None
   * @retval None
   */
-void WavePlayerStart(void)
+void WavePlayerStart(WAVE_FormatTypeDef waveformat, 
+  WavePlayer_getDataCB_type getDataCB,
+  uint8_t volume)
 {
-  UINT bytesread = 0;
-  WAVE_FormatTypeDef waveformat;
+  int32_t bytesread = 0;
+  int32_t length;
+  int16_t *pBuf = NULL;
   
-	/* Open the Wave file to be played */
-	if(f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
-	{
-		Error_Handler();
-	}
-	else
-	{    
-		/* Read sizeof(WaveFormat) from the selected file */
-		f_read (&FileRead, &waveformat, sizeof(waveformat), &bytesread);
-		
-		/* Set WaveDataLenght to the Speech Wave length */
-		WaveDataLength = waveformat.FileSize;
+  /* Set WaveDataLenght to the Speech Wave length */
+  WaveDataLength = waveformat.FileSize;
+
+  AudioRemSize = WaveDataLength - sizeof(WAVE_FormatTypeDef);
+  
+  /* Initialize Wave player (Codec, DMA, I2C) */
+  if (BSP_AUDIO_OUT_Init(OUTPUT_DEVICE_AUTO, volume, waveformat.SampleRate) != 0)
+  {
+    Error_Handler();
+  }
+  
+  /* Start playing Wave */
+  BSP_AUDIO_OUT_Play((uint16_t*)&Audio_BufferStereo[0], sizeof(Audio_BufferStereo));
+  LEDsState = LED6_TOGGLE;
+  
+	/* Toggling LED6 to signal Play */
+	LEDsState = LED6_TOGGLE;
 	
-		AudioRemSize = WaveDataLength - bytesread;
-		
-		if (0 == resGuardado)
-		{
-			if (f_open(&FileWrite, 
-				REC_WAVE_NAME_COMPLETO , 
-				FA_CREATE_ALWAYS|FA_WRITE) != FR_OK)
-			{
-				Error_Handler();
-			}
-			
-			f_write(&FileWrite, &waveformat, sizeof(waveformat), &bytesread);
-		}
-		
-		/* Play the Wave */
-		WavePlayBack(waveformat.SampleRate);
-	}    
+  /* Resume playing Wave */
+	BSP_AUDIO_OUT_Resume();
+	
+  if (CHANNEL_MONO == waveformat.NbrChannels)
+  {
+    length = AUDIO_BUFFER_STEREO_LENGTH/4;
+  }
+  else
+  {
+    length = AUDIO_BUFFER_STEREO_LENGTH/2;
+  }
+      
+  while (AudioRemSize > 0)
+  {
+    if (BUFFER_OFFSET_HALF == BufferOffset)
+    {
+      pBuf = &Audio_BufferStereo[0];
+    }
+    
+    if (BUFFER_OFFSET_FULL == BufferOffset)
+    {
+      pBuf = &Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH/2];
+    }
+    
+    if (NULL != pBuf)
+    {
+      bytesread = getDataCB(pBuf, length);
+      
+      if (CHANNEL_MONO == waveformat.NbrChannels)
+      {
+        convertToStereo(pBuf, pBuf, length);
+      }
+      
+      BufferOffset = BUFFER_OFFSET_NONE;
+      
+      pBuf = NULL;
+      
+      if (bytesread <= 0)
+      {
+        AudioRemSize = 0;
+      }
+      else
+      {
+        AudioRemSize -= bytesread;
+        if (AudioRemSize < (length*2))
+        {
+          AudioRemSize = 0;
+        }
+      }
+    }
+  }
+  
+  LEDsState = LEDS_OFF;
+  
+	BSP_AUDIO_OUT_Stop(CODEC_PDWN_HW);
 }
 
 /**

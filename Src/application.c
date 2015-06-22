@@ -39,12 +39,108 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "application.h"
+#include "ff.h"
+#include "main.h"
+#include "waveplayer.h"
 
 /* Private typedef -----------------------------------------------------------*/
+typedef enum
+{
+  APPSTATE_IDLE = 0,
+  APPSTATE_MOUNT_FS,
+  APPSTATE_UMOUNT_FS,
+  APPSTATE_PLAY
+}appState_enum;
+
 /* Private define ------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+static FATFS USBDISKFatFs;           /* File system object for USB disk logical drive */
+static char USBDISKPath[4];          /* USB Host logical drive path */
+static appState_enum appState = APPSTATE_IDLE;
+
+/* Variable used by FatFs*/
+static FIL FileRead;
+static WAVE_FormatTypeDef waveformat;
+static UINT bytesread = 0;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+int32_t getDataCB(int16_t *pBuff, int32_t length)
+{
+  UINT bytesread = 0;
+  
+  f_read(&FileRead, 
+    pBuff, 
+    length*2,
+    (void *)&bytesread); 
+
+  return bytesread;
+}
 /* Exported functions ------------------------------------------------------- */
+
+extern void application_init(void)
+{
+  /*##-1- Link the USB Host disk I/O driver ##################################*/
+  if(FATFS_LinkDriver(&USBH_Driver, USBDISKPath) != 0)
+  {
+    Error_Handler();
+  }
+}
+
+extern void application_task(void)
+{
+  switch (appState)
+  {
+    case APPSTATE_IDLE:
+      break;
+    
+    case APPSTATE_MOUNT_FS:
+      if (f_mount(&USBDISKFatFs, (TCHAR const*)USBDISKPath, 0 ) != FR_OK ) 
+      {
+        /* FatFs initialization fails */
+        Error_Handler();
+      }
+      else
+      {
+        appState = APPSTATE_PLAY;
+      }
+      break;
+    
+    case APPSTATE_UMOUNT_FS:
+      f_mount(NULL, (TCHAR const*)"", 0);
+      appState = APPSTATE_IDLE;
+      break;
+    
+    case APPSTATE_PLAY:
+      if (f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
+      {
+        Error_Handler();
+      }
+      else
+      {    
+        /* Read sizeof(WaveFormat) from the selected file */
+        f_read (&FileRead, &waveformat, sizeof(waveformat), &bytesread);
+        
+        WavePlayerStart(waveformat, getDataCB, 70);
+        
+        f_close(&FileRead);
+      }
+      break;
+    
+    default:
+      appState = APPSTATE_IDLE;
+      break;
+  }
+}
+
+extern void application_conect(void)
+{
+  appState = APPSTATE_MOUNT_FS;
+}
+extern void application_disconect(void)
+{
+  appState = APPSTATE_UMOUNT_FS;
+}
+
 /* End of file ---------------------------------------------------------------*/
 

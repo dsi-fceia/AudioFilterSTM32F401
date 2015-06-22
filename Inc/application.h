@@ -47,6 +47,11 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 
+extern void application_init(void);
+extern void application_task(void);
+extern void application_conect(void);
+extern void application_disconect(void);
+
 #endif /* APPLICATION_H */
 
 /* End of file ---------------------------------------------------------------*/

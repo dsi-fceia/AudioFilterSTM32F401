@@ -33,13 +33,6 @@
 #include "main.h"
 
 /* Exported types ------------------------------------------------------------*/
-typedef enum
-{
-  BUFFER_OFFSET_NONE = 0,  
-  BUFFER_OFFSET_HALF,  
-  BUFFER_OFFSET_FULL,     
-}BUFFER_StateTypeDef;
-
 typedef struct
 {
   uint32_t   ChunkID;       /* 0 */ 
@@ -58,14 +51,19 @@ typedef struct
   uint32_t   SubChunk2Size; /* 40 */    
 
 }WAVE_FormatTypeDef;
+
+typedef int32_t (*WavePlayer_getDataCB_type)(int16_t *pBuff, int32_t length);
+
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
+#define CHANNEL_MONO    1
+#define CHANNEL_STEREO  2
+
 /* Exported functions ------------------------------------------------------- */
-void  WavePlayBack(uint32_t AudioFreq);
-int   WavePlayerInit(uint32_t AudioFreq);
-void  WavePlayerPauseResume(uint32_t state);
-void  WavePlayerStart(void);
-void  WavePlayer_CallBack(void);
+void WavePlayerStart(WAVE_FormatTypeDef waveformat, 
+  WavePlayer_getDataCB_type getDataCB,
+  uint8_t volume);
+
 #endif /* __WAVEPLAYER_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

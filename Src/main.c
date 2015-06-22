@@ -27,6 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "application.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -37,35 +38,20 @@ TIM_OC_InitTypeDef sConfigLed;
 /* Counter for User button presses. Defined as external in waveplayer.c file */
 __IO uint32_t PressCount = 1;
 
-/* Wave Player Pause/Resume Status. Defined as external in waveplayer.c file */
-__IO uint32_t PauseResumeStatus = IDLE_STATUS;   
-
-/* Re-play Wave file status on/off.
-   Defined as external in waveplayer.c file */
-__IO uint32_t RepeatState = REPEAT_ON;
-
 /* Capture Compare Register Value.
    Defined as external in stm32f4xx_it.c file */
 __IO uint16_t CCR1Val = 16826;              
 
 extern __IO uint32_t LEDsState;
 
-__IO uint32_t CmdIndex = CMD_PLAY;
 __IO uint32_t PbPressCheck = 0;
 
-FATFS USBDISKFatFs;           /* File system object for USB disk logical drive */
-char USBDISKPath[4];          /* USB Host logical drive path */
 USBH_HandleTypeDef hUSBHost; /* USB Host handle */
-
-MSC_ApplicationTypeDef AppliState = APPLICATION_IDLE;
-static uint8_t  USBH_USR_ApplicationState = USBH_USR_FS_INIT;
 
 /* Private function prototypes -----------------------------------------------*/
 static void TIM_LED_Config(void);
 static void SystemClock_Config(void);
 static void USBH_UserProcess(USBH_HandleTypeDef *pHost, uint8_t vId);
-static void MSC_Application(void);
-static void COMMAND_AudioExecuteApplication(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -109,9 +95,6 @@ int main(void)
   /* Configure TIM4 Peripheral to manage LEDs lighting */
   TIM_LED_Config();
   
-  /* Initialize the Repeat state */
-  RepeatState = REPEAT_ON;
-
   /* Turn OFF all LEDs */
   LEDsState = LEDS_OFF;
   
@@ -119,38 +102,24 @@ int main(void)
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
   
   /*##-1- Link the USB Host disk I/O driver ##################################*/
-  if(FATFS_LinkDriver(&USBH_Driver, USBDISKPath) == 0)
-  { 
-    /*##-2- Init Host Library ################################################*/
-    USBH_Init(&hUSBHost, USBH_UserProcess, 0);
-    
-    /*##-3- Add Supported Class ##############################################*/
-    USBH_RegisterClass(&hUSBHost, USBH_MSC_CLASS);
-    
-    /*##-4- Start Host Process ###############################################*/
-    USBH_Start(&hUSBHost);
-    
-    /* Run Application (Blocking mode)*/
-    while (1)
-    {
-      switch(AppliState)
-      {
-      case APPLICATION_START:
-        MSC_Application();
-        break;      
-      case APPLICATION_IDLE:
-      default:
-        break;      
-      }
-      
-      /* USBH_Background Process */
-      USBH_Process(&hUSBHost);
-    }
-  }
+  application_init();
   
-  /* Infinite loop */
+  /*##-2- Init Host Library ################################################*/
+  USBH_Init(&hUSBHost, USBH_UserProcess, 0);
+  
+  /*##-3- Add Supported Class ##############################################*/
+  USBH_RegisterClass(&hUSBHost, USBH_MSC_CLASS);
+  
+  /*##-4- Start Host Process ###############################################*/
+  USBH_Start(&hUSBHost);
+  
+  /* Run Application (Blocking mode)*/
   while (1)
   {
+    application_task();
+    
+    /* USBH_Background Process */
+    USBH_Process(&hUSBHost);
   }
 }
 
@@ -168,72 +137,13 @@ static void USBH_UserProcess (USBH_HandleTypeDef *pHost, uint8_t vId)
     break;
     
   case HOST_USER_DISCONNECTION:
-    AppliState = APPLICATION_IDLE;
-    f_mount(NULL, (TCHAR const*)"", 0);          
+    application_disconect();
     break;
     
   case HOST_USER_CLASS_ACTIVE:
-    AppliState = APPLICATION_START;
+    application_conect();
     break;
-    
-  case HOST_USER_CONNECTION:
-    break;
-    
-  default:
-    break;
-  }
-}
-
-/**
-  * @brief  Main routine for Mass storage application
-  * @param  None
-  * @retval None
-  */
-static void MSC_Application(void)
-{
-  switch(USBH_USR_ApplicationState)
-  {
-  case USBH_USR_AUDIO:    
-    /* Go to Audio menu */
-    COMMAND_AudioExecuteApplication();
-    
-    /* Set user initialization flag */
-    USBH_USR_ApplicationState = USBH_USR_FS_INIT;
-    break;
-    
-  case USBH_USR_FS_INIT:    
-    /* Initializes the File System */
-    if(f_mount(&USBDISKFatFs, (TCHAR const*)USBDISKPath, 0 ) != FR_OK ) 
-    {
-      /* FatFs initialization fails */
-      Error_Handler();
-    }
-    
-    /* Go to menu */
-    USBH_USR_ApplicationState = USBH_USR_AUDIO;
-    break;
-    
-  default:
-    break;
-  }
-}
-
-/**
-  * @brief  COMMAND_AudioExecuteApplication.
-  * @param  None
-  * @retval None
-  */
-static void COMMAND_AudioExecuteApplication(void)
-{
-  /* Execute the command switch the command index */
-  switch(CmdIndex)
-  {
-    /* Start Playing from USB Flash memory */
-  case CMD_PLAY:
-    if(RepeatState == REPEAT_ON)
-      WavePlayerStart();
-    break;
-        
+      
   default:
     break;
   }
@@ -453,14 +363,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   {
     if(PressCount == 1)
     {
-      /* Resume playing Wave status */
-      PauseResumeStatus = RESUME_STATUS;
       PressCount = 0;
     }
     else
     {
-      /* Pause playing Wave status */
-      PauseResumeStatus = PAUSE_STATUS;
       PressCount = 1;
     }
   }
