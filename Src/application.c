@@ -40,9 +40,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "application.h"
 #include "ff.h"
-#include "main.h"
 #include "waveplayer.h"
 #include "waverecorder.h"
+#include "ff.h"    
+#include "ff_gen_drv.h"
+#include "usbh_diskio.h"
+#include "main.h"
 
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
