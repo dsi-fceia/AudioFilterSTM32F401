@@ -49,15 +49,6 @@ typedef enum
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
-/* LED State (Toggle or OFF)*/
-__IO uint32_t LEDsState;
-
-/* Audio wave data length to be played */
-static uint32_t WaveDataLength = 0;
-
-/* Audio wave remaining data length to be played */
-static __IO uint32_t AudioRemSize = 0;
-
 /* Ping-Pong buffer used for audio play */
 int16_t Audio_BufferStereo[AUDIO_BUFFER_STEREO_LENGTH];
 
@@ -140,6 +131,8 @@ void WavePlayerStart(WAVE_FormatTypeDef waveformat,
   int32_t bytesread = 0;
   int32_t length;
   int16_t *pBuf = NULL;
+  uint32_t AudioRemSize = 0;
+  uint32_t WaveDataLength = 0;  
   
   /* Set WaveDataLenght to the Speech Wave length */
   WaveDataLength = waveformat.FileSize;
