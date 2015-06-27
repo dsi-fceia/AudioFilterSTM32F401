@@ -30,7 +30,7 @@
 #define __WAVEPLAYER_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "stdint.h"
 
 /* Exported types ------------------------------------------------------------*/
 typedef struct
