@@ -42,11 +42,12 @@ __IO uint32_t PressCount = 1;
    Defined as external in stm32f4xx_it.c file */
 __IO uint16_t CCR1Val = 16826;              
 
-extern __IO uint32_t LEDsState;
-
 __IO uint32_t PbPressCheck = 0;
 
 USBH_HandleTypeDef hUSBHost; /* USB Host handle */
+
+/* LED State (Toggle or OFF)*/
+__IO uint32_t LEDsState;
 
 /* Private function prototypes -----------------------------------------------*/
 static void TIM_LED_Config(void);

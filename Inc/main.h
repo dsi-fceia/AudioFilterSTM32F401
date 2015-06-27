@@ -54,6 +54,8 @@
 #define MEMS_LIS3DSH     0x3F /* LIS3DSH MEMS Acclerometer ID */
 #define MEMS_LIS302DL    0x3B /* LIS302DL MEMS Acclerometer ID */
                                                                                     
+extern __IO uint32_t LEDsState;
+
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void Error_Handler(void);
