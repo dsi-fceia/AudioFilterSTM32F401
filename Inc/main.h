@@ -36,25 +36,13 @@
 #include "stm32f401_discovery_accelerometer.h"
 #include <stdio.h>
 #include "stm32f4xx_it.h"
-#include "waveplayer.h"
 
-#include "waverecorder.h"
 #include "ff.h"    
 #include "ff_gen_drv.h"
 #include "usbh_diskio.h"
  
 /* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-
-/* \brief nombre del archivo de audio sin extensión */
-#define WAVE_NAME 							"audioOut50-1000"
-
-/* \brief nombre del archivo de audio con extensión y path (no modificar)*/
-#define WAVE_NAME_COMPLETO 			"0:"WAVE_NAME".wav"
-
-/* \brief nombre del archivo de audio grabado con extensión y path (no modificar)*/
-#define REC_WAVE_NAME_COMPLETO	"0:"WAVE_NAME"-REC.wav"
-  
+/* Exported constants --------------------------------------------------------*/  
 /* Defines for LEDs lighting */
 #define LED3_TOGGLE      0x03  /* Toggle LED3 */
 #define LED4_TOGGLE      0x04  /* Toggle LED4 */
