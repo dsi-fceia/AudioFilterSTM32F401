@@ -28,6 +28,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "audioFilter.h"
+#include "waveplayer.h"
 
 /** @addtogroup STM32F4-Discovery_Audio_Player_Recorder
 * @{

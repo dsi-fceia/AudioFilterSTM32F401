@@ -48,5 +48,10 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void WaveRecord(WAVE_FormatTypeDef waveformat, 
+  WaveRecord_getDataCB_type getDataCB)
+{
+	
+}
 /* End of file ---------------------------------------------------------------*/
 

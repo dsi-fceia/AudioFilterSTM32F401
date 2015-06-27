@@ -42,10 +42,16 @@
 #define __WAVERECORDER_H
 
 /* Includes ------------------------------------------------------------------*/ 
+#include "waveplayer.h"
+
 /* Exported types ------------------------------------------------------------*/
+typedef int32_t (*WaveRecord_getDataCB_type)(int16_t *pBuff, int32_t length);
+
 /* Exported constants --------------------------------------------------------*/                                                                                    
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void WaveRecord(WAVE_FormatTypeDef waveformat, 
+  WaveRecord_getDataCB_type getDataCB);
 
 #endif /* __WAVERECORDER_H */
 

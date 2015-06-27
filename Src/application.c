@@ -42,6 +42,7 @@
 #include "ff.h"
 #include "main.h"
 #include "waveplayer.h"
+#include "waverecorder.h"
 
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
@@ -49,7 +50,8 @@ typedef enum
   APPSTATE_IDLE = 0,
   APPSTATE_MOUNT_FS,
   APPSTATE_UMOUNT_FS,
-  APPSTATE_PLAY
+	APPSTATE_FILTER_AND_WRITE,
+  APPSTATE_PLAY,
 }appState_enum;
 
 /* Private define ------------------------------------------------------------*/
@@ -102,7 +104,7 @@ extern void application_task(void)
       }
       else
       {
-        appState = APPSTATE_PLAY;
+        appState = APPSTATE_FILTER_AND_WRITE;
       }
       break;
     
@@ -111,6 +113,23 @@ extern void application_task(void)
       appState = APPSTATE_IDLE;
       break;
     
+		case APPSTATE_FILTER_AND_WRITE:
+			if (f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
+      {
+        Error_Handler();
+      }
+      else
+      {
+        /* Read sizeof(WaveFormat) from the selected file */
+        f_read (&FileRead, &waveformat, sizeof(waveformat), &bytesread);
+
+        WaveRecord(waveformat, getDataCB);
+
+        f_close(&FileRead);
+      }
+			appState = APPSTATE_PLAY;
+			break;
+
     case APPSTATE_PLAY:
       if (f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
       {
