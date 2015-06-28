@@ -74,10 +74,7 @@ int32_t getDataCB(int16_t *pBuff, int32_t length)
 {
   UINT bytesread = 0;
   
-  f_read(&FileRead, 
-    pBuff, 
-    length*2,
-    (void *)&bytesread); 
+  f_read(&FileRead, pBuff, length*sizeof(int16_t), (void *)&bytesread); 
 
   return bytesread;
 }
