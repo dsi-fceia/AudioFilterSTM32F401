@@ -65,8 +65,6 @@ static appState_enum appState = APPSTATE_IDLE;
 
 /* Variable used by FatFs*/
 static FIL FileRead;
-static WAVE_FormatTypeDef waveformat;
-static UINT bytesread = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -91,6 +89,9 @@ extern void application_init(void)
 
 extern void application_task(void)
 {
+  UINT bytesread = 0;
+  WAVE_FormatTypeDef waveformat;
+  
   switch (appState)
   {
     case APPSTATE_IDLE:
