@@ -31,27 +31,15 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stdint.h"
+#include "waveFormat.h"
 
 /* Exported types ------------------------------------------------------------*/
-typedef struct
-{
-  uint32_t   ChunkID;       /* 0 */ 
-  uint32_t   FileSize;      /* 4 */
-  uint32_t   FileFormat;    /* 8 */
-  uint32_t   SubChunk1ID;   /* 12 */
-  uint32_t   SubChunk1Size; /* 16*/  
-  uint16_t   AudioFormat;   /* 20 */ 
-  uint16_t   NbrChannels;   /* 22 */   
-  uint32_t   SampleRate;    /* 24 */
-  
-  uint32_t   ByteRate;      /* 28 */
-  uint16_t   BlockAlign;    /* 32 */  
-  uint16_t   BitPerSample;  /* 34 */  
-  uint32_t   SubChunk2ID;   /* 36 */   
-  uint32_t   SubChunk2Size; /* 40 */    
-
-}WAVE_FormatTypeDef;
-
+/**
+  * @brief  call back getData
+  * @param  pBuff: Puntero a donde guardar las muestras obtenidas
+  * @param  length: Cantidad de muestras que se desean obtener
+  * @retval bytes leidos, si hubo error devolver -1
+  */
 typedef int32_t (*WavePlayer_getDataCB_type)(int16_t *pBuff, int32_t length);
 
 /* Exported constants --------------------------------------------------------*/
@@ -60,6 +48,13 @@ typedef int32_t (*WavePlayer_getDataCB_type)(int16_t *pBuff, int32_t length);
 #define CHANNEL_STEREO  2
 
 /* Exported functions ------------------------------------------------------- */
+/**
+  * @brief  Iniciar reproducción de Audio
+  * @param  waveformat: Estructura con información de formato de audio
+  * @param  getDataCB: Puntero a funcion para obtener muestras de audio
+  * @param  volume: volumen de reproducción (0 a 100)
+  * @retval none
+  */
 void WavePlayerStart(WAVE_FormatTypeDef waveformat, 
   WavePlayer_getDataCB_type getDataCB,
   uint8_t volume);

@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    waverecorder.c 
+  * @file    audioFormat.h 
   * @author  Gustavo Muro
   * @version V0.0.1
   * @date    30/05/2015
-  * @brief   Filtrado de audio.
+  * @brief   header Filtrado de audio.
   ******************************************************************************
   * @attention
   *
@@ -36,35 +36,39 @@
   *
   ******************************************************************************
   */ 
-  
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __WAVERECORDER_H
-#define __WAVERECORDER_H
+#ifndef WAVE_FORMAT_H
+#define WAVE_FORMAT_H
 
 /* Includes ------------------------------------------------------------------*/ 
-#include "waveFormat.h"
+#include "stdint.h"
 
 /* Exported types ------------------------------------------------------------*/
-/**
-  * @brief  call back getData
-  * @param  pBuff: Puntero a donde guardar las muestras obtenidas
-  * @param  length: Cantidad de muestras que se desean obtener
-  * @retval bytes leidos, si hubo error devolver -1
-  */
-typedef int32_t (*WaveRecord_getDataCB_type)(int16_t *pBuff, int32_t length);
+typedef struct
+{
+  uint32_t   ChunkID;       /* 0 */ 
+  uint32_t   FileSize;      /* 4 */
+  uint32_t   FileFormat;    /* 8 */
+  uint32_t   SubChunk1ID;   /* 12 */
+  uint32_t   SubChunk1Size; /* 16*/  
+  uint16_t   AudioFormat;   /* 20 */ 
+  uint16_t   NbrChannels;   /* 22 */   
+  uint32_t   SampleRate;    /* 24 */
+  
+  uint32_t   ByteRate;      /* 28 */
+  uint16_t   BlockAlign;    /* 32 */  
+  uint16_t   BitPerSample;  /* 34 */  
+  uint32_t   SubChunk2ID;   /* 36 */   
+  uint32_t   SubChunk2Size; /* 40 */    
+
+}WAVE_FormatTypeDef;
 
 /* Exported constants --------------------------------------------------------*/                                                                                    
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-/**
-  * @brief  Iniciar almacenamiento de audio
-  * @param  waveformat: Estructura con información de formato de audio
-  * @param  getDataCB: Puntero a funcion para obtener muestras de audio
-  * @retval none
-  */
-void WaveRecord(WAVE_FormatTypeDef waveformat, 
-  WaveRecord_getDataCB_type getDataCB);
 
-#endif /* __WAVERECORDER_H */
+
+#endif /* WAVE_FORMAT_H */
 
 /* End of file ---------------------------------------------------------------*/
