@@ -57,7 +57,6 @@ __IO BUFFER_StateTypeDef BufferOffset = BUFFER_OFFSET_NONE;
 
 /* Variable used by FatFs*/
 FIL FileRead;
-FIL FileWrite;
 
 /* Private function prototypes -----------------------------------------------*/
 
