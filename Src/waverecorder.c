@@ -39,6 +39,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "waverecorder.h"
+#include "application.h"
+#include "ff.h"
+#include "main.h"
 
 /* Private typedef -----------------------------------------------------------*/
 
@@ -51,7 +54,42 @@
 void WaveRecord(WAVE_FormatTypeDef waveformat, 
   WaveRecord_getDataCB_type getDataCB)
 {
-	
+  FIL FileWrite;
+  int32_t bytesread = 0;
+  uint32_t AudioRemSize = 0;
+  UINT byteswritten;
+  int16_t sample;
+  
+  if (f_open(&FileWrite, REC_WAVE_NAME_COMPLETO, FA_CREATE_ALWAYS | FA_WRITE) != FR_OK)
+  {
+    Error_Handler();
+  }
+  
+  f_write(&FileWrite, &waveformat, sizeof(waveformat), &byteswritten);
+  
+  AudioRemSize = waveformat.FileSize - sizeof(WAVE_FormatTypeDef);
+  
+  while (AudioRemSize > 0)
+  {
+    bytesread = getDataCB(&sample, 1);
+    
+    if (bytesread <= 0)
+    {
+      AudioRemSize = 0;
+    }
+    else
+    {
+      f_write(&FileWrite, &sample, sizeof(sample), &byteswritten); 
+      
+      AudioRemSize -= bytesread;
+      if (AudioRemSize < sizeof(sample))
+      {
+        AudioRemSize = 0;
+      }
+    }
+  }
+  
+  f_close(&FileWrite);
 }
 /* End of file ---------------------------------------------------------------*/
 
