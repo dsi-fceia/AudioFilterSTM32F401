@@ -26,8 +26,10 @@
   */ 
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
 #include "main.h"
 #include "application.h"
+#include "utils.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -78,9 +80,9 @@ int main(void)
   BSP_LED_Init(LED6);
  
   /* Configure the system clock to 84 MHz */
-  SystemClock_Config();  
-  
-  /* Initialize MEMS Accelerometer mounted on STM32F4-Discovery board */
+  SystemClock_Config(); 
+   
+	/* Initialize MEMS Accelerometer mounted on STM32F4-Discovery board */
   if(BSP_ACCELERO_Init() != ACCELERO_OK)
   {
     /* Initialization Error */
@@ -112,8 +114,8 @@ int main(void)
   USBH_RegisterClass(&hUSBHost, USBH_MSC_CLASS);
   
   /*##-4- Start Host Process ###############################################*/
-  USBH_Start(&hUSBHost);
-  
+  USBH_Start(&hUSBHost);	
+	
   /* Run Application (Blocking mode)*/
   while (1)
   {

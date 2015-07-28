@@ -137,7 +137,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>0</RunToMain>
+            <RunToMain>1</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -457,6 +457,16 @@
               <FileName>waverecorder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\waverecorder.c</FilePath>
+            </File>
+            <File>
+              <FileName>utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>fputc_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\fputc_debug.c</FilePath>
             </File>
           </Files>
         </Group>

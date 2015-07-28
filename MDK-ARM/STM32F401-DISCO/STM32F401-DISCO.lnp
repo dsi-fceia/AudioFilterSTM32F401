@@ -8,6 +8,8 @@
 "stm32f401-disco\lowpassfs16000.o"
 "stm32f401-disco\application.o"
 "stm32f401-disco\waverecorder.o"
+"stm32f401-disco\utils.o"
+"stm32f401-disco\fputc_debug.o"
 "stm32f401-disco\cs43l22.o"
 "stm32f401-disco\lsm303dlhc.o"
 "stm32f401-disco\stm32f401_discovery.o"
