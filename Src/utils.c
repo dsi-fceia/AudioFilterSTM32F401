@@ -1,13 +1,10 @@
 #include <stdio.h>
-#include <math.h>
-#include "main.h"
+#include "stm32f4xx_hal.h"
 #include "utils.h"
 
 TIM_HandleTypeDef 	TIM_Handle;
-uint32_t						TockValue;
 
-
-void TIM_Tick_Tock_Init(void)
+void TickTock_Init(void)
 {
 	__TIM5_CLK_ENABLE();	
 	TIM_Handle.Instance = TIM5;
@@ -19,14 +16,14 @@ void TIM_Tick_Tock_Init(void)
 	HAL_TIM_Base_Start(&TIM_Handle);	
 }
 
-
-void Tick(void)
+void TickTock_Start(void)
 {
 	__HAL_TIM_SetCounter(&TIM_Handle,0);
 }
 
-void Tock(void)
+void TickTock_Stop(void)
 {
+	uint32_t	TockValue;
 	TockValue=__HAL_TIM_GetCounter(&TIM_Handle);
 	printf("Tiempo transcurrido: %u uS\n",TockValue);
 }

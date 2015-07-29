@@ -11,8 +11,8 @@
 
 /* Exported functions ------------------------------------------------------- */
 
-void TIM_Tick_Tock_Init(void);
-void Tick(void);
-void Tock(void);
+void TickTock_Init(void);
+void TickTock_Start(void);
+void TickTock_Stop(void);
 
 #endif /* __UTILS_H */
