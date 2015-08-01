@@ -53,7 +53,7 @@ typedef enum
   APPSTATE_IDLE = 0,
   APPSTATE_MOUNT_FS,
   APPSTATE_UMOUNT_FS,
-	APPSTATE_FILTER_AND_WRITE,
+	APPSTATE_WRITE,
   APPSTATE_PLAY,
 }appState_enum;
 
@@ -105,7 +105,7 @@ extern void application_task(void)
       }
       else
       {
-        appState = APPSTATE_FILTER_AND_WRITE;
+        appState = APPSTATE_WRITE;
       }
       break;
     
@@ -114,7 +114,7 @@ extern void application_task(void)
       appState = APPSTATE_IDLE;
       break;
     
-		case APPSTATE_FILTER_AND_WRITE:
+		case APPSTATE_WRITE:
 			if (f_open(&FileRead, WAVE_NAME_COMPLETO, FA_READ) != FR_OK)
       {
         Error_Handler();
