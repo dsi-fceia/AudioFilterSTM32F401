@@ -444,11 +444,6 @@
               <FilePath>..\Src\audioFilter.c</FilePath>
             </File>
             <File>
-              <FileName>lowPassFS16000.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lowPassFS16000.c</FilePath>
-            </File>
-            <File>
               <FileName>application.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\application.c</FilePath>
@@ -467,6 +462,11 @@
               <FileName>fputc_debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\fputc_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>filters.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\filters.c</FilePath>
             </File>
           </Files>
         </Group>
