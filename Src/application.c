@@ -76,7 +76,7 @@ int32_t getDataCB(int16_t *pBuff, int32_t length)
   
   f_read(&FileRead, pBuff, length*sizeof(int16_t), (void *)&bytesread); 
   
-  audioFilter_filter(pBuff, pBuff, length);
+  audioFilter_filter(pBuff, pBuff, bytesread/sizeof(int16_t));
   
   return bytesread;
 }
